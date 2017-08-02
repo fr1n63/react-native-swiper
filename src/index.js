@@ -322,12 +322,46 @@ export default class extends Component {
   }
 
   onScroll = e => {
-    const { contentOffset } = e.nativeEvent;
-    const {onScroll} = this.props;
+    const { contentOffset } = e.nativeEvent
+    const { onScroll } = this.props
 
     if (onScroll) {
-      const stateToPass = {...this.fullState(), contentOffset};
-      onScroll(e, stateToPass, this);
+      const stateToPass = {...this.fullState(), contentOffset}
+      onScroll(e, stateToPass, this)
+    }
+  }
+
+  onResponderRelease = e => {
+    const { contentOffset: { x, y } } = e.nativeEvent
+    const { onResponderRelease, loop } = this.props
+
+    if (onResponderRelease) {
+      const { dir, total, width, height, index } = this.state
+      const step = dir === 'x' ? width : height
+      const pos = dir === 'x' ? x : y
+
+      const currentPos = index * step
+      const dragAmount = currentPos - pos
+
+      const willMove = dragAmount > step * 0.5
+
+      let newIndex = index;
+      if (willMove && dragAmount > 0) {
+        newIndex++;
+      } else if (willMove && dragAmount < 0) {
+        newIndex--;
+      }
+
+      if (loop) {
+        if (index <= -1) {
+          newIndex = total - 1
+        } else if (index >= total) {
+          newIndex = 0
+        }
+      }
+
+      const stateToPass = { ...this.fullState(), newIndex }
+      onResponderRelease(e, stateToPass, this)
     }
   }
 
@@ -450,6 +484,7 @@ export default class extends Component {
         prop !== 'onMomentumScrollEnd' &&
         prop !== 'renderPagination' &&
         prop !== 'onScrollBeginDrag' &&
+        prop !== 'onResponderRelease' &&
         prop !== 'onScroll'
       ) {
         let originResponder = props[prop]
@@ -571,6 +606,7 @@ export default class extends Component {
           onScrollBeginDrag={this.onScrollBegin}
           onMomentumScrollEnd={this.onScrollEnd}
           onScrollEndDrag={this.onScrollEndDrag}
+          onResponderRelease={this.onResponderRelease}
           onScroll={this.onScroll}>
           {pages}
         </ScrollView>
