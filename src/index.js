@@ -122,7 +122,9 @@ export default class extends Component {
     dotStyle: PropTypes.object,
     activeDotStyle: PropTypes.object,
     dotColor: PropTypes.string,
-    activeDotColor: PropTypes.string
+    activeDotColor: PropTypes.string,
+    scrollEventThrottle: PropTypes.number,
+    onScroll: Proptypes.func,
   }
 
   /**
@@ -147,7 +149,8 @@ export default class extends Component {
     autoplay: false,
     autoplayTimeout: 2.5,
     autoplayDirection: true,
-    index: 0
+    index: 0,
+    scrollEventThrottle: 16
   }
 
   /**
@@ -318,6 +321,16 @@ export default class extends Component {
     }
   }
 
+  onScroll = e => {
+    const { contentOffset } = e.nativeEvent;
+    const {onScroll} = this.props;
+
+    if (onScroll) {
+      const stateToPass = {...this.fullState(), contentOffset};
+      onScroll(e, stateToPass, this);
+    }
+  }
+
   /**
    * Update index after scroll
    * @param  {object} offset content offset
@@ -436,7 +449,8 @@ export default class extends Component {
       if (typeof props[prop] === 'function' &&
         prop !== 'onMomentumScrollEnd' &&
         prop !== 'renderPagination' &&
-        prop !== 'onScrollBeginDrag'
+        prop !== 'onScrollBeginDrag' &&
+        prop !== 'onScroll'
       ) {
         let originResponder = props[prop]
         overrides[prop] = (e) => originResponder(e, this.fullState(), this)
@@ -545,16 +559,19 @@ export default class extends Component {
   }
 
   renderScrollView = pages => {
+    const {style, onScroll, ...props} = this.props;
+
     if (Platform.OS === 'ios') {
       return (
         <ScrollView ref='scrollView'
-          {...this.props}
+          {...props}
           {...this.scrollViewPropOverrides()}
-          contentContainerStyle={[styles.wrapper, this.props.style]}
+          contentContainerStyle={[styles.wrapper, style]}
           contentOffset={this.state.offset}
           onScrollBeginDrag={this.onScrollBegin}
           onMomentumScrollEnd={this.onScrollEnd}
-          onScrollEndDrag={this.onScrollEndDrag}>
+          onScrollEndDrag={this.onScrollEndDrag}
+          onScroll={this.onScroll}>
           {pages}
         </ScrollView>
        )
