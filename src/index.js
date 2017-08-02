@@ -124,7 +124,7 @@ export default class extends Component {
     dotColor: PropTypes.string,
     activeDotColor: PropTypes.string,
     scrollEventThrottle: PropTypes.number,
-    onScroll: Proptypes.func,
+    onScroll: PropTypes.func,
   }
 
   /**
