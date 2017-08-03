@@ -23,6 +23,12 @@
 
 ## Changelogs
 
+- **[1.6.0]**
+  + Refactor and tidy up to simplify the code.
+  + Change pagination to use the visual position of the swiper instead of the final resting position - keeps things looking much more fluid.
+  + *Breaking - Separate Buttons and Pagination into separate files, removed pass through of style props through main Swiper - new method is to pass through a styled version of these components or generate your own 
+  + *Breaking - Remove title, buggy and wasn't configurable
+
 - **[1.5.4]**
   + Added easily accessible pagination point manipulation: use `dotColor` / `activeDotColor` and `dotStyle` / `activeDotStyle` (thanks [@denizs](https://github.com/denizs))
   + Added scrollEnabled prop to documentation (thanks [@ibandominguez](https://github.com/ibandominguez))

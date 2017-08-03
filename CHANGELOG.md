@@ -1,3 +1,9 @@
+- [1.6.0]
+  + Refactor and tidy up to simplify the code.
+  + Change pagination to use the visual position of the swiper instead of the final resting position - keeps things looking much more fluid.
+  + *Breaking - Separate Buttons and Pagination into separate files, removed pass through of style props through main Swiper - new method is to pass through a styled version of these components or generate your own 
+  + *Breaking - Remove title, buggy and wasn't configurable
+
 - [1.5.1]
   + Allow scroll without animate, ref: [scrollBy(index, animated)](#scrollbyindex-animated)
   + Remove [#254](https://github.com/leecade/react-native-swiper/pull/254) which break the scroll direction in loop mode
